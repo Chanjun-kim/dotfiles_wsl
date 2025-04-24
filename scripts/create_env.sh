@@ -22,8 +22,8 @@ conda activate "$ENV_NAME"
 echo "🐍 Python path: $(which python)"
 
 # [3] Jupyter 관련 패키지 설치 및 커널 등록
-pip install -U pip
-pip install -U jupyter ipykernel
+pip install -U pip --quiet
+pip install -U jupyter ipykernel --quiet
 python -m ipykernel install --user --name "$ENV_NAME" --display-name "Python ($ENV_NAME)"
 
 # [4] 사용자 정의 커널 수정 스크립트 실행
