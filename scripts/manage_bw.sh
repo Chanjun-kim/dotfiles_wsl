@@ -52,11 +52,29 @@ add_key() {
 }
 
 # 🔍 키 조회
+# get_key() {
+#   read -p "🔍 조회할 키 이름: " NAME
+#   VALUE=$(bw get password "$NAME" --session "$BW_SESSION" > /dev/null)
+#   if [[ -z "$VALUE" ]]; then
+#     echo "❗️ [$NAME] 항목을 찾을 수 없습니다."
+#   else
+#     echo "🔐 $NAME = $VALUE"
+#   fi
+# }
+
 get_key() {
   read -p "🔍 조회할 키 이름: " NAME
-  VALUE=$(bw get password "$NAME" --session "$BW_SESSION" 2>/dev/null)
-  if [[ -z "$VALUE" ]]; then
+
+  ID=$(bw list items --search "$NAME" --session "$BW_SESSION" | jq -r --arg name "$NAME" '.[] | select(.name == $name) | .id')
+
+  if [[ -z "$ID" ]]; then
     echo "❗️ [$NAME] 항목을 찾을 수 없습니다."
+    return
+  fi
+
+  VALUE=$(bw get password "$ID" --session "$BW_SESSION")
+  if [[ -z "$VALUE" ]]; then
+    echo "❗️ [$NAME]의 비밀번호를 가져올 수 없습니다."
   else
     echo "🔐 $NAME = $VALUE"
   fi
